@@ -1,0 +1,96 @@
+.pageHead {
+  margin-bottom: 28px;
+}
+.pageHead h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.pageHead p {
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.row:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  flex: none;
+}
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.draftTag {
+  font-family: var(--font-num);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  border: 1px solid var(--border-2);
+  border-radius: 5px;
+  padding: 1px 5px;
+  flex: none;
+}
+.meta {
+  font-size: 14px;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pendingPill {
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  flex: none;
+}
+.chevron {
+  color: var(--text-3);
+  font-size: 18px;
+  flex: none;
+}

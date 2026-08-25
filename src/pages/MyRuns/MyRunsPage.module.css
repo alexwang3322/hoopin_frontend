@@ -1,0 +1,106 @@
+.pageHead {
+  margin-bottom: 28px;
+}
+.pageHead h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.pageHead p {
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.row:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  flex: none;
+}
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.when {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.ago {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.declineReason {
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--declined-bg);
+  color: var(--declined-fg);
+  font-size: 13.5px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+  flex: none;
+}
+.pending {
+  color: var(--pending-fg);
+  border-color: var(--pending-ring);
+  background: var(--pending-bg);
+}
+.playing {
+  color: var(--playing-fg);
+  border-color: var(--playing-ring);
+  background: var(--playing-bg);
+}
+.declined {
+  color: var(--declined-fg);
+  border-color: var(--declined-ring);
+  background: var(--declined-bg);
+}
+.withdrawn {
+  color: var(--text-3);
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}

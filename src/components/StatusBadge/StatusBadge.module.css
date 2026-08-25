@@ -1,0 +1,30 @@
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid;
+  display: inline-block;
+  white-space: nowrap;
+}
+.host {
+  color: var(--host-fg);
+  border-color: var(--host-ring);
+  background: var(--host-bg);
+}
+.pending {
+  color: var(--pending-fg);
+  border-color: var(--pending-ring);
+  background: var(--pending-bg);
+}
+.playing {
+  color: var(--playing-fg);
+  border-color: var(--playing-ring);
+  background: var(--playing-bg);
+}
+.declined {
+  color: var(--declined-fg);
+  border-color: var(--declined-ring);
+  background: var(--declined-bg);
+}
