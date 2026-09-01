@@ -43,6 +43,16 @@
 .field select:focus {
   border-color: var(--accent);
 }
+/* Mobile Safari's date/time inputs ignore width:100% and box themselves to
+   their own native content width unless default appearance is turned off,
+   so on narrow screens they render narrower than sibling selects and wrap
+   their formatted value onto a second line instead of matching the
+   single-line height of the other filter fields. */
+.field input[type="date"],
+.field input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
 .clearBtn {
   background: none;
   border: 0;
