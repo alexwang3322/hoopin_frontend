@@ -18,12 +18,14 @@ import type {
 export class ApiRequestError extends Error {
   status: number;
   code: string;
+  field?: string;
 
-  constructor(status: number, code: string, message: string) {
+  constructor(status: number, code: string, message: string, field?: string) {
     super(message);
     this.name = "ApiRequestError";
     this.status = status;
     this.code = code;
+    this.field = field;
   }
 }
 
@@ -44,7 +46,12 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const body = await res.json().catch(() => null);
   if (!res.ok) {
     const err = body as WireApiError | null;
-    throw new ApiRequestError(res.status, err?.error.code ?? "UNKNOWN_ERROR", err?.error.message ?? res.statusText);
+    throw new ApiRequestError(
+      res.status,
+      err?.error.code ?? "UNKNOWN_ERROR",
+      err?.error.message ?? res.statusText,
+      err?.error.field,
+    );
   }
   return body as T;
 }

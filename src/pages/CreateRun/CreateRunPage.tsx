@@ -76,8 +76,8 @@ function CreateRunForm({ editingRun }: { editingRun: Run | undefined }) {
   const handlePublish = async () => {
     setBusy(true);
     try {
-      await publish(form, editingRun?.id ?? null);
-      navigate("/hosting");
+      const ok = await publish(form, editingRun?.id ?? null);
+      if (ok) navigate("/hosting");
     } finally {
       setBusy(false);
     }
