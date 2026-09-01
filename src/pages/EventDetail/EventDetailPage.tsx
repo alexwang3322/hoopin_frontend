@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useRunDetail } from "../../hooks/useRunDetail";
 import { RUN_FORMAT_LABEL, type ViewerAction } from "../../models/Run";
@@ -28,6 +28,12 @@ export function EventDetailPage() {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirmingCancel, setConfirmingCancel] = useState(false);
+  // `busy` alone doesn't stop a second click that fires before React
+  // re-renders the disabled button (setState is async) — this ref is
+  // checked synchronously, in the same tick as the click, so a rapid
+  // repeat click is dropped outright instead of firing a second request
+  // that the backend then has to reject.
+  const inFlight = useRef(false);
 
   if (loading && !run) return null;
 
@@ -47,10 +53,13 @@ export function EventDetailPage() {
   const finished = isRunFinished(run.endsAt);
 
   const runAction = async (fn: () => Promise<void>) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
     setBusy(true);
     try {
       await fn();
     } finally {
+      inFlight.current = false;
       setBusy(false);
     }
   };
