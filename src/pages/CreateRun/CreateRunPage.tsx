@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAppState } from "../../context/AppStoreContext";
 import { useCreateRun } from "../../hooks/useCreateRun";
+import { apiClient } from "../../services/apiClient";
+import { toRun } from "../../services/mappers";
 import { BLANK_RUN_DRAFT, type CreateRunDraft } from "../../models/CreateRunDraft";
 import type { Run } from "../../models/Run";
 import { splitIsoDateTime } from "../../utils/time";
@@ -19,10 +20,11 @@ function runToDraft(run: Run): CreateRunDraft {
     timezone: run.timezone,
     format: run.format,
     venueName: run.venueName,
-    exactAddress: run.exactAddress,
+    exactAddress: run.exactAddress ?? "",
+    city: run.city,
     capacity: run.capacity === null ? "" : String(run.capacity),
     visibility: run.visibility,
-    autoApprove: run.autoApprove,
+    autoApprove: run.autoApprove ?? false,
   };
 }
 
@@ -35,9 +37,23 @@ function runToDraft(run: Run): CreateRunDraft {
 export function CreateRunPage() {
   const [searchParams] = useSearchParams();
   const draftRunId = searchParams.get("draft");
-  const { runs } = useAppState();
-  const editingRun = draftRunId ? runs.find((r) => r.id === draftRunId) : undefined;
+  const [editingRun, setEditingRun] = useState<Run | undefined>(undefined);
+  const [loaded, setLoaded] = useState(!draftRunId);
 
+  useEffect(() => {
+    if (!draftRunId) {
+      setEditingRun(undefined);
+      setLoaded(true);
+      return;
+    }
+    setLoaded(false);
+    apiClient
+      .getRun(draftRunId)
+      .then((wire) => setEditingRun(toRun(wire)))
+      .finally(() => setLoaded(true));
+  }, [draftRunId]);
+
+  if (!loaded) return null;
   return <CreateRunForm key={draftRunId ?? "new"} editingRun={editingRun} />;
 }
 
@@ -115,12 +131,21 @@ function CreateRunForm({ editingRun }: { editingRun: Run | undefined }) {
           </select>
         </label>
 
-        <label className={styles.field}>
-          <span>
-            Court name <em className={styles.hint}>public — shown on the feed</em>
-          </span>
-          <input type="text" value={form.venueName} onChange={(e) => update("venueName", e.target.value)} />
-        </label>
+        <div className={styles.fieldRow}>
+          <label className={styles.field}>
+            <span>
+              Court name <em className={styles.hint}>public — shown on the feed</em>
+            </span>
+            <input type="text" value={form.venueName} onChange={(e) => update("venueName", e.target.value)} />
+          </label>
+          <label className={styles.field}>
+            <span>City</span>
+            <select value={form.city} onChange={(e) => update("city", e.target.value as CreateRunDraft["city"])}>
+              <option value="SF">San Francisco</option>
+              <option value="OAK">Oakland</option>
+            </select>
+          </label>
+        </div>
 
         <label className={styles.field}>
           <span>

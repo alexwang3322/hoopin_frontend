@@ -66,6 +66,15 @@
   text-decoration: underline;
 }
 
+.errorNote {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--declined-bg);
+  color: var(--declined-fg);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

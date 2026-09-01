@@ -1,20 +1,23 @@
 import { useCallback } from "react";
-import { useAppDispatch } from "../context/AppStoreContext";
 import { useToast } from "../context/ToastContext";
-import { delay } from "../services/runService";
+import { apiClient } from "../services/apiClient";
+import { draftToWireRun } from "../services/mappers";
 import type { CreateRunDraft } from "../models/CreateRunDraft";
 
 export function useCreateRun() {
-  const dispatch = useAppDispatch();
   const toast = useToast();
 
   const publish = useCallback(
     async (draft: CreateRunDraft, editingRunId: string | null) => {
-      await delay(200);
-      dispatch({ type: "PUBLISH", draft, editingRunId });
+      const body = draftToWireRun(draft, /* publish */ true);
+      if (editingRunId) {
+        await apiClient.updateRun(editingRunId, body);
+      } else {
+        await apiClient.createRun(body);
+      }
       toast.show(`${draft.title.trim() || "Untitled run"} published.`);
     },
-    [dispatch, toast],
+    [toast],
   );
 
   return { publish };

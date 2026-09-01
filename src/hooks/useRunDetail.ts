@@ -1,64 +1,110 @@
-import { useCallback } from "react";
-import { useAppDispatch, useAppState } from "../context/AppStoreContext";
+import { useCallback, useEffect, useState } from "react";
 import { useToast } from "../context/ToastContext";
-import { CURRENT_USER_ID } from "../constants";
-import { delay, isAddressUnlocked, pendingCountFor, viewerActionOf } from "../services/runService";
+import { apiClient, ApiRequestError } from "../services/apiClient";
+import { toRun } from "../services/mappers";
+import type { Run } from "../models/Run";
 
 export function useRunDetail(runId: string | undefined) {
-  const { runs, account } = useAppState();
-  const dispatch = useAppDispatch();
   const toast = useToast();
+  const [run, setRun] = useState<Run | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  const run = runId ? runs.find((r) => r.id === runId) : undefined;
+  const refetch = useCallback(async () => {
+    if (!runId) return;
+    setLoading(true);
+    try {
+      const wire = await apiClient.getRun(runId);
+      setRun(toRun(wire));
+      setNotFound(false);
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.status === 404) {
+        setNotFound(true);
+      } else {
+        toast.show(err instanceof Error ? err.message : "Failed to load this run.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [runId, toast]);
+
+  useEffect(() => {
+    void refetch();
+  }, [refetch]);
 
   const approve = useCallback(
     async (requestId: string) => {
       if (!run) return;
-      const req = run.requests.find((r) => r.id === requestId);
-      await delay(200);
-      dispatch({ type: "APPROVE", runId: run.id, requestId });
-      if (req) toast.show(`${req.requester.name} approved to play`);
+      const req = run.pendingRequests?.items.find((r) => r.id === requestId);
+      try {
+        await apiClient.approveRequest(run.id, requestId);
+        toast.show(req ? `${req.requester.name} approved to play` : "Approved.");
+        await refetch();
+      } catch (err) {
+        toast.show(err instanceof Error ? err.message : "Couldn't approve that request.");
+      }
     },
-    [run, dispatch, toast],
+    [run, refetch, toast],
   );
 
   const decline = useCallback(
-    async (requestId: string) => {
+    async (requestId: string, reason: string | null) => {
       if (!run) return;
-      const req = run.requests.find((r) => r.id === requestId);
-      await delay(200);
-      dispatch({ type: "DECLINE", runId: run.id, requestId, reason: null });
-      if (req) toast.show(`${req.requester.name}’s request declined`);
+      const req = run.pendingRequests?.items.find((r) => r.id === requestId);
+      try {
+        await apiClient.declineRequest(run.id, requestId, reason);
+        toast.show(req ? `${req.requester.name}’s request declined` : "Declined.");
+        await refetch();
+      } catch (err) {
+        toast.show(err instanceof Error ? err.message : "Couldn't decline that request.");
+      }
     },
-    [run, dispatch, toast],
+    [run, refetch, toast],
   );
 
   const requestToJoin = useCallback(
     async (message: string | null) => {
       if (!run) return;
-      await delay(200);
-      dispatch({ type: "REQUEST_TO_JOIN", runId: run.id, message });
-      toast.show(run.autoApprove ? "You’re in 🎉" : "Request sent.");
+      try {
+        const wire = await apiClient.requestToJoin(run.id, message);
+        toast.show(wire.status === "approved" ? "You’re in 🎉" : "Request sent.");
+        await refetch();
+      } catch (err) {
+        toast.show(err instanceof Error ? err.message : "Couldn't send that request.");
+      }
     },
-    [run, dispatch, toast],
+    [run, refetch, toast],
   );
 
   const withdraw = useCallback(
     async (requestId: string) => {
       if (!run) return;
-      await delay(200);
-      dispatch({ type: "WITHDRAW", runId: run.id, requestId });
-      toast.show("Request withdrawn.");
+      try {
+        await apiClient.withdrawRequest(run.id, requestId);
+        toast.show("Request withdrawn.");
+        await refetch();
+      } catch (err) {
+        toast.show(err instanceof Error ? err.message : "Couldn't withdraw that request.");
+      }
     },
-    [run, dispatch, toast],
+    [run, refetch, toast],
   );
 
-  const viewerAction = run ? viewerActionOf(run, CURRENT_USER_ID) : undefined;
-  const addressUnlocked = run ? isAddressUnlocked(run, CURRENT_USER_ID) : false;
-  const pendingCount = run ? pendingCountFor(run) : 0;
-  const myRequest = run?.requests.find(
-    (r) => r.requester.id === CURRENT_USER_ID && (r.status === "pending" || r.status === "approved"),
-  );
+  const addressUnlocked = run?.exactAddress !== undefined;
+  const pendingCount = run?.pendingRequests?.pendingCount ?? 0;
+  const myRequest = run?.viewerRequest;
 
-  return { run, account, viewerAction, addressUnlocked, pendingCount, myRequest, approve, decline, requestToJoin, withdraw };
+  return {
+    run,
+    loading,
+    notFound,
+    viewerAction: run?.viewerAction,
+    addressUnlocked,
+    pendingCount,
+    myRequest,
+    approve,
+    decline,
+    requestToJoin,
+    withdraw,
+  };
 }

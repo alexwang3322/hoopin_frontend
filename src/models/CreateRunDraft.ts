@@ -1,8 +1,10 @@
-import type { RunFormat, RunVisibility } from "./Run";
+import type { City, RunFormat, RunVisibility } from "./Run";
 
 /** Host-a-run form state — field-for-field the same as html/index.html's
  *  #screen-create inputs (mirrors API_CONTRACT.md's CreateRunRequest, split
- *  into local date/start/end/timezone the way the form itself is laid out). */
+ *  into local date/start/end/timezone the way the form itself is laid out).
+ *  `city` was missing here until the backend actually required it
+ *  (CreateRunRequest.city is non-optional) — see frontend/CONTRACT_ALIGNMENT.md. */
 export interface CreateRunDraft {
   title: string;
   description: string;
@@ -13,6 +15,7 @@ export interface CreateRunDraft {
   format: RunFormat;
   venueName: string;
   exactAddress: string;
+  city: City;
   capacity: string; // kept as the raw input string; "" = unlimited
   visibility: RunVisibility;
   autoApprove: boolean;
@@ -29,6 +32,7 @@ export const BLANK_RUN_DRAFT: CreateRunDraft = {
   format: "5v5_full_court",
   venueName: "Kezar Pavilion, San Francisco",
   exactAddress: "755 Frederick St, San Francisco, CA 94117",
+  city: "SF",
   capacity: "10",
   visibility: "public",
   autoApprove: true,

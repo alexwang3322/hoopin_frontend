@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { Run } from "../../models/Run";
-import { RUN_FORMAT_LABEL, viewerActionFor } from "../../models/Run";
-import { CURRENT_USER_ID } from "../../constants";
+import { RUN_FORMAT_LABEL, cardViewerAction } from "../../models/Run";
 import { formatDateChip, formatRunWhen } from "../../utils/time";
 import { StatusBadge } from "../StatusBadge/StatusBadge";
 import { PersonLink } from "../PersonLink/PersonLink";
@@ -10,7 +9,7 @@ import styles from "./RunCard.module.css";
 export function RunCard({ run }: { run: Run }) {
   const navigate = useNavigate();
   const { mon, day } = formatDateChip(run.startsAt);
-  const viewerAction = viewerActionFor(run, CURRENT_USER_ID);
+  const viewerAction = cardViewerAction(run);
   const openSpots = run.capacity !== null ? run.capacity - run.goingCount : null;
 
   return (

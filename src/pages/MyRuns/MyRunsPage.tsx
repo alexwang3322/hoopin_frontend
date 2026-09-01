@@ -18,7 +18,7 @@ const STATUS_CLASS: Record<string, string> = {
 };
 
 export function MyRunsPage() {
-  const requests = useMyRequests();
+  const { requests, loading } = useMyRequests();
   const navigate = useNavigate();
 
   return (
@@ -28,7 +28,7 @@ export function MyRunsPage() {
         <p>Games you've asked to join. No notifications yet — this page is the only way to find out you got in.</p>
       </div>
 
-      {requests.length === 0 && <EmptyState />}
+      {!loading && requests.length === 0 && <EmptyState />}
 
       <div className={styles.list}>
         {requests.map((req) => (

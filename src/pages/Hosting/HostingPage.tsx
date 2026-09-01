@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useHosting } from "../../hooks/useHosting";
-import { pendingCountFor } from "../../services/runService";
 import { RUN_FORMAT_LABEL } from "../../models/Run";
 import { formatRunWhen } from "../../utils/time";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
 import styles from "./HostingPage.module.css";
 
 export function HostingPage() {
-  const runs = useHosting();
+  const { runs, loading } = useHosting();
   const navigate = useNavigate();
 
   return (
@@ -17,11 +16,11 @@ export function HostingPage() {
         <p>Runs you organize, including drafts. Pending requests need your call.</p>
       </div>
 
-      {runs.length === 0 && <EmptyState />}
+      {!loading && runs.length === 0 && <EmptyState />}
 
       <div className={styles.list}>
         {runs.map((run) => {
-          const pending = pendingCountFor(run);
+          const pending = run.pendingRequests?.pendingCount ?? 0;
           const goto = run.isDraft ? `/create?draft=${run.id}` : `/runs/${run.id}`;
           return (
             <button key={run.id} type="button" className={styles.row} onClick={() => navigate(goto)}>

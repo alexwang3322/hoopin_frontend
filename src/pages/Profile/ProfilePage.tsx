@@ -1,14 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { PROFILES } from "../../mock/profiles";
+import { useUserProfile } from "../../hooks/useUserProfile";
 import { Avatar } from "../../components/Avatar/Avatar";
 import styles from "./ProfilePage.module.css";
 
 export function ProfilePage() {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  const profile = userId ? PROFILES[userId] : undefined;
+  const { profile, loading, notFound } = useUserProfile(userId);
 
-  if (!profile) {
+  if (!loading && (notFound || !profile)) {
     return (
       <div>
         <p>This player couldn't be found.</p>
@@ -18,6 +18,8 @@ export function ProfilePage() {
       </div>
     );
   }
+
+  if (!profile) return null;
 
   return (
     <div>

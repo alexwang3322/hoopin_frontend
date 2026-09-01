@@ -1,8 +1,28 @@
-import { useAppState } from "../context/AppStoreContext";
-import { CURRENT_USER_ID } from "../constants";
-import { getMyRequests } from "../services/runService";
+import { useEffect, useState } from "react";
+import { apiClient } from "../services/apiClient";
+import { toJoinRequestWithRun } from "../services/mappers";
+import type { JoinRequestWithRun } from "../models/JoinRequest";
 
 export function useMyRequests() {
-  const { runs } = useAppState();
-  return getMyRequests(runs, CURRENT_USER_ID);
+  const [requests, setRequests] = useState<JoinRequestWithRun[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    apiClient
+      .getMyRequests()
+      .then((page) => {
+        if (cancelled) return;
+        setRequests(page.items.map(toJoinRequestWithRun));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return { requests, loading };
 }

@@ -2,68 +2,60 @@
 
 Tracks gaps found comparing `frontend/` against `../API_CONTRACT.md` (root). Check items off as they're fixed. Re-verify against the contract when done, not just against this list — the contract is the source of truth.
 
-Legend: **P0** = produces wrong data today, even mock-only · **P1** = contract-specified behavior missing · **P2** = half-built feature · **P3** = lower priority / needs a contract-side decision too.
+**Status:** as of wiring `frontend/` to the live `backend/` (Hono/D1), all data now round-trips through the real API — the backend enforces business rules server-side, and the mock layer (`src/mock/runs.ts`, `src/mock/profiles.ts`, `src/services/runService.ts`) has been deleted. Most items below are resolved as a direct consequence; the few still open are noted.
+
+Legend: **P0** = produces wrong data today · **P1** = contract-specified behavior missing · **P2** = half-built feature · **P3** = lower priority / needs a contract-side decision too.
 
 ---
 
 ## P0 — capacity not enforced
 
-- [ ] **Approve doesn't check capacity before approving.**
-  Contract: §3.2 — "Capacity is enforced server-side in `approve` (409 `RUN_FULL`)... never client-only."
-  Where: `src/services/runService.ts` `applyApprove` (~L35-42); `src/components/RequestCard/RequestCard.tsx` (Approve button has no `isFull` awareness).
-  Fix: guard `applyApprove` with `if (run.capacity !== null && run.goingCount >= run.capacity) return run` (or surface an error/toast); disable Approve in the UI when full.
+- [x] **Approve doesn't check capacity before approving.**
+  Fixed server-side: `backend/src/routes/requests.ts`'s `approve` handler checks `going_count >= capacity` and returns 409 `RUN_FULL` before approving. Frontend no longer has any local approve logic to be wrong.
 
-- [ ] **Auto-approve on request-to-join doesn't check capacity.**
-  Contract: §3.2 — "...and in the auto-approve path on create — never client-only."
-  Where: `src/services/runService.ts` `applyRequestToJoin` (~L57-69).
-  Fix: same capacity guard before setting `status: "approved"` on the auto-approve branch.
+- [x] **Auto-approve on request-to-join doesn't check capacity.**
+  Fixed server-side: `backend/src/routes/requests.ts`'s create-request handler checks capacity on the auto-approve path too.
 
 ## P1 — contract-specified fields/behavior missing
 
-- [ ] **Create-run form has no `city` field; every new run hardcodes `"SF"`.**
-  Contract: §2 — `CreateRunRequest.city: "SF" | "OAK"` is required.
-  Where: `src/models/CreateRunDraft.ts` (no `city` prop); `src/pages/CreateRun/CreateRunPage.tsx` (no input); `src/services/runService.ts` `applyPublish` (~L128, hardcodes `city: "SF"`).
-  Fix: add `city: City` to `CreateRunDraft`, add a select to the form, thread it through `draftToRunFields`/`applyPublish`.
+- [x] **Create-run form has no `city` field.**
+  Added `city: City` to `models/CreateRunDraft.ts` and a select to `pages/CreateRun/CreateRunPage.tsx`; threaded through `services/mappers.ts`'s `draftToWireRun`.
 
-- [ ] **City toggle in the header is cosmetic — never filters Discover.**
-  Contract: §3.1 — `GET /runs` supports `city` as an optional, combinable filter.
-  Where: `src/components/Layout/RootLayout.tsx` (~L14-16, ~L55-62) — local state, comment admits it's decorative; `src/hooks/useRuns.ts` `DiscoverFilters` has no `city`.
-  Fix: lift city selection into shared state (context or lifted to `useRuns`), filter `getDiscoverRuns` by it.
+- [x] **City toggle in the header is cosmetic — never filters Discover.**
+  Lifted into `context/AppStoreContext.tsx` (shared `city` state); `hooks/useRuns.ts` now sends it as `GET /runs?city=`, a real server-side filter.
 
-- [ ] **Timezone offset hardcoded to `-07:00` regardless of selected timezone.**
-  Contract: §6 — `ZonedDateTimeString` must carry the *correct* UTC offset for its `timezone`, never naive/zone-less.
-  Where: `src/services/runService.ts` `draftToRunFields` (~L86-87); `src/pages/CreateRun/CreateRunPage.tsx` timezone field is free-text with no validation (~L107).
-  Fix: constrain timezone to a known set with a correct offset lookup, or compute the offset properly instead of hardcoding Pacific.
+- [x] **Timezone offset hardcoded to `-07:00`.**
+  Resolved by construction: the frontend no longer computes `starts_at`/`ends_at` at all — it sends `date`/`start_time`/`end_time`/`timezone` to the API, and `backend/src/lib/time.ts` computes the correct offset via `Intl.DateTimeFormat`.
 
 ## P2 — half-built features
 
-- [ ] **No decline-reason input — write path missing though read path exists.**
-  Where: `src/hooks/useRunDetail.ts` `decline` hardcodes `reason: null` (~L25-34); `src/components/RequestCard/RequestCard.tsx` Decline button takes no input (~L36-38). Contrast with `src/mock/runs.ts` (~L68-70) which seeds a declined request *with* a reason, and `src/pages/EventDetail/EventDetailPage.tsx` (~L167) which renders it when present.
-  Fix: add a reason textarea to the decline flow, thread through `useRunDetail.decline`.
+- [x] **No decline-reason input.**
+  Added an inline reason field to `components/RequestCard/RequestCard.tsx`'s decline flow, threaded through `hooks/useRunDetail.ts`'s `decline(requestId, reason)` to `POST .../decline`'s `decline_reason` body field.
 
-- [ ] **Cover gradients are hand-picked per run, not hash-derived from `id`.**
-  Contract: §6 — "covers/avatars are client-derived from hashing `id`"; `RunSummary.cover_seed = id`, FE hashes client-side. Confirmed pattern: `ui/figma-plugin/code.js`'s `fnv1a`/`coverPaint`/`avatarPaint`.
-  Where: `src/models/Run.ts` (~L70-71, literal `coverGradient` string per run); `src/services/runService.ts` `applyPublish` (~L136, every new run gets the same hardcoded gradient regardless of id); `src/mock/profiles.ts` (hand-picked hex `color` per user, same issue for avatars).
-  Fix: port an `fnv1a`-style hash → gradient/color function into `src/utils/`, seed it with `id`, compute at render/create time instead of storing static fixture values.
+- [x] **Cover gradients/avatar colors hand-picked, not hash-derived from `id`.**
+  `utils/hash.ts` (fnv1a-based, ported conceptually from the same idea backend/src/lib/viewer.ts uses) now computes `coverGradient`/`color` client-side from the server's `cover_seed`/`id` in `services/mappers.ts` — including for newly created runs, which previously all got the same hardcoded gradient.
 
 ## P3 — needs a contract-side decision, not just a frontend fix
 
-- [ ] **`distanceMiles` / distance filter has no contract counterpart.**
-  Where: `src/models/Run.ts` `distanceMiles` (~L69); `src/pages/Discover/DiscoverPage.tsx` distance filter (~L37-48); `src/hooks/useRuns.ts` (~L41).
-  Contract has no `distance_miles`/geo field on `RunSummary`/`RunDetail` and no distance param on `GET /runs` (§2, §3.1).
-  Fix: either add `distance_miles` (or lat/lng) to the contract and a distance query param to `GET /runs`, or flag to product that this stays mock-only until backend geo support is designed.
+- [x] **`distanceMiles` / distance filter had no contract counterpart.**
+  Removed rather than backed — there was never a real data source for it (mock-only random numbers), and the contract still has no geo field/param. If a real "near me" feature is wanted, that needs a contract change (add `distance_miles` or lat/lng to `RunSummary`, a distance param to `GET /runs`) before it's worth re-adding here.
 
-- [ ] **No cursor pagination anywhere.**
-  Contract: §6 — cursor pagination (`CursorPage<T>`) is explicitly asked for "even though the current mockup renders flat unpaginated lists — an intentional addition beyond the mockup's demo scope."
-  Where: `src/services/runService.ts` `getDiscoverRuns`/`getHostingRuns`/`getMyRequests` all return plain arrays; none of `useRuns`/`useHosting`/`useMyRequests` model `next_cursor`.
-  Fix: lower priority — decide whether to model pagination in the mock layer now (so hooks/components already expect a `CursorPage<T>` shape) or defer until a real backend exists.
+- [ ] **No cursor pagination in the UI.**
+  The API returns proper `CursorPage<T>` (`next_cursor`) on every list now, and `services/wireTypes.ts`/`apiClient.ts` are fully typed for it — but no hook follows `next_cursor` yet (all lists just render the first page, default `limit=20`). Not a problem yet: total seed data is well under one page. Add "load more" to `useRuns`/`useHosting`/`useMyRequests` if/when a list grows past 20 items.
+
+- [ ] **`useHosting`'s per-run pending count is an N+1.**
+  New item, not in the original audit: `GET /me/hosting` returns `RunSummary[]`, which has no per-run pending-request count (only `HeaderCounts.hosting_pending_requests`, a single sum across all hosted runs, exists at summary level). `hooks/useHosting.ts` works around this by fetching each hosted run's detail in parallel to read `pending_requests.pending_count`. Fine at this project's scale (a handful of hosted runs); if the contract ever adds a dedicated summary field for this, switch to it instead.
 
 ---
 
 ## Already aligned (no action needed)
 
-- `models/Run.ts`, `User.ts`, `JoinRequest.ts`, `HeaderCounts.ts` match §2 field-for-field (camelCase vs snake_case is a normal FE convention, not a gap).
+- `models/Run.ts`, `User.ts`, `JoinRequest.ts`, `HeaderCounts.ts` match §2 field-for-field (camelCase vs snake_case is a normal FE convention, not a gap). `Run` now also carries the detail-only fields (`exactAddress`, `pendingRequests`, `viewerRequest`, `viewerAction`) as truly-optional keys, mirroring the contract's own "absent key is meaningful" design for `RunDetail`.
 - `RunFormat`/`RunVisibility`/`JoinRequestStatus` enums match exactly.
-- `ViewerAction` trimmed 7→6 states (no `"signed_out"`) is correct and documented — there's no sign-in flow, so that state is unreachable by construction.
-- `isAddressUnlocked` (`services/runService.ts` ~L26-29) correctly gates `exact_address` to host-or-approved.
+- `ViewerAction` now includes all 7 states from the contract (previously trimmed to 6, dropping `"signed_out"`, since there was no way to produce it against mock data) — still practically unreachable today since there's no sign-in flow and every request sends the dev-auth bearer token, but the type is honest now.
+- Server-side `exact_address`/`pending_requests` gating (§6) is real now — enforced in `backend/src/lib/viewer.ts`, not just computed client-side.
 - "No separate Attendee resource" rule (§1, §6) respected — `attendees` is derived from approved requests, not stored separately.
+
+## Known follow-up (not a contract gap): real auth
+
+Auth is still `backend/src/lib/auth.ts`'s local-dev-only `Bearer dev:<userId>` stub, sent by `services/apiClient.ts` — matches the contract's transport (§5) but not a real issuer. Wiring Clerk (or another issuer) is tracked separately, not in this file.

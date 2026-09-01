@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRunDetail } from "../../hooks/useRunDetail";
-import { RUN_FORMAT_LABEL } from "../../models/Run";
+import { RUN_FORMAT_LABEL, type ViewerAction } from "../../models/Run";
 import { formatRunWhen } from "../../utils/time";
 import { PersonLink } from "../../components/PersonLink/PersonLink";
 import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
@@ -12,12 +12,25 @@ import styles from "./EventDetailPage.module.css";
 export function EventDetailPage() {
   const { runId } = useParams<{ runId: string }>();
   const navigate = useNavigate();
-  const { run, viewerAction, addressUnlocked, pendingCount, myRequest, approve, decline, requestToJoin, withdraw } =
-    useRunDetail(runId);
+  const {
+    run,
+    loading,
+    notFound,
+    viewerAction,
+    addressUnlocked,
+    pendingCount,
+    myRequest,
+    approve,
+    decline,
+    requestToJoin,
+    withdraw,
+  } = useRunDetail(runId);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
-  if (!run || !viewerAction) {
+  if (loading && !run) return null;
+
+  if (!run || !viewerAction || notFound) {
     return (
       <div>
         <p>This run doesn't exist.</p>
@@ -28,7 +41,8 @@ export function EventDetailPage() {
     );
   }
 
-  const pendingRequests = run.requests.filter((r) => r.status === "pending");
+  const pendingRequests = run.pendingRequests?.items ?? [];
+  const attendees = run.attendees ?? [];
 
   const runAction = async (fn: () => Promise<void>) => {
     setBusy(true);
@@ -105,11 +119,11 @@ export function EventDetailPage() {
             )}
           </div>
 
-          {run.attendees.length > 0 && (
+          {attendees.length > 0 && (
             <div className={styles.panel}>
               <h4>Who's playing</h4>
               <div className={styles.whoList}>
-                {run.attendees.map((a) => (
+                {attendees.map((a) => (
                   <PersonLink key={a.id} user={a} subtitle={a.bio ?? undefined} />
                 ))}
               </div>
@@ -127,7 +141,7 @@ export function EventDetailPage() {
 }
 
 interface ActionContentProps {
-  viewerAction: NonNullable<ReturnType<typeof useRunDetail>["viewerAction"]>;
+  viewerAction: ViewerAction;
   busy: boolean;
   message: string;
   onMessageChange: (v: string) => void;
@@ -170,6 +184,9 @@ function ActionContent({ viewerAction, busy, message, onMessageChange, onRequest
   }
   if (viewerAction === "full") {
     return <p className={styles.hostNote}>This run is full.</p>;
+  }
+  if (viewerAction === "signed_out") {
+    return <p className={styles.hostNote}>Sign in to request to play.</p>;
   }
   // can_request
   return (

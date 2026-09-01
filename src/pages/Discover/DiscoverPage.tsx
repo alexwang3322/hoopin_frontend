@@ -5,7 +5,7 @@ import type { RunFormat } from "../../models/Run";
 import styles from "./DiscoverPage.module.css";
 
 export function DiscoverPage() {
-  const { runs, loading, filters, setFilters, clearFilters } = useRuns();
+  const { runs, loading, error, filters, setFilters, clearFilters } = useRuns();
 
   return (
     <div>
@@ -34,24 +34,13 @@ export function DiscoverPage() {
             <option value="3v3_half_court">Half court</option>
           </select>
         </label>
-        <label className={styles.field}>
-          <span>Distance</span>
-          <select
-            value={filters.maxDistance}
-            onChange={(e) => setFilters({ ...filters, maxDistance: e.target.value as typeof filters.maxDistance })}
-          >
-            <option value="">Any distance</option>
-            <option value="2">Within 2 mi</option>
-            <option value="5">Within 5 mi</option>
-            <option value="10">Within 10 mi</option>
-          </select>
-        </label>
         <button type="button" className={styles.clearBtn} onClick={clearFilters}>
           Clear
         </button>
       </div>
 
-      {!loading && runs.length === 0 && <EmptyState />}
+      {error && <p className={styles.errorNote}>{error}</p>}
+      {!loading && !error && runs.length === 0 && <EmptyState />}
 
       <div className={styles.grid}>
         {runs.map((run) => (

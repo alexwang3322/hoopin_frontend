@@ -1,19 +1,15 @@
-import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useHeaderCounts } from "../../hooks/useHeaderCounts";
-import { useAppState } from "../../context/AppStoreContext";
+import { useAppState, useSetCity } from "../../context/AppStoreContext";
 import { Avatar } from "../Avatar/Avatar";
 import { ToastHost } from "../ToastHost/ToastHost";
-import type { City } from "../../models/Run";
 import styles from "./RootLayout.module.css";
 
 export function RootLayout() {
   const navigate = useNavigate();
-  const { account } = useAppState();
+  const { account, city } = useAppState();
+  const setCity = useSetCity();
   const counts = useHeaderCounts();
-  // Cosmetic only — html/index.html's own SF/OAK toggle never filters
-  // Discover, it just tracks which segment is selected.
-  const [city, setCity] = useState<City>("SF");
 
   return (
     <div className={styles.page}>
