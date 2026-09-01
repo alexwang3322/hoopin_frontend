@@ -21,7 +21,7 @@ export function RunCard({ run }: { run: Run }) {
             <span className={`${styles.day} num`}>{day}</span>
           </div>
           <div className={styles.badgeSlot}>
-            <StatusBadge action={viewerAction} />
+            <StatusBadge action={viewerAction} cancelled={run.isCancelled} />
           </div>
         </div>
         <div className={styles.cardBody}>

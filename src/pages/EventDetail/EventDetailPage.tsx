@@ -23,9 +23,11 @@ export function EventDetailPage() {
     decline,
     requestToJoin,
     withdraw,
+    cancel,
   } = useRunDetail(runId);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [confirmingCancel, setConfirmingCancel] = useState(false);
 
   if (loading && !run) return null;
 
@@ -55,6 +57,10 @@ export function EventDetailPage() {
         <div className={styles.mainCol}>
           <div className={styles.hero} style={{ background: run.coverGradient }} />
 
+          {run.isCancelled && (
+            <div className={styles.cancelledBanner}>This run has been cancelled.</div>
+          )}
+
           <div className={styles.titleBlock}>
             <h2>{run.title}</h2>
             <span className={styles.when}>{formatRunWhen(run.startsAt, run.endsAt, RUN_FORMAT_LABEL[run.format])}</span>
@@ -66,7 +72,7 @@ export function EventDetailPage() {
 
           {run.description && <p className={styles.desc}>{run.description}</p>}
 
-          {viewerAction === "host" && (
+          {viewerAction === "host" && !run.isCancelled && (
             <div>
               <div className={styles.reqHeading}>
                 <h3>Requests to play</h3>
@@ -89,10 +95,11 @@ export function EventDetailPage() {
           <div className={styles.panel}>
             <div className={styles.capRow}>
               <CapacityMeter going={run.goingCount} capacity={run.capacity} />
-              <StatusBadge action={viewerAction} />
+              <StatusBadge action={viewerAction} cancelled={run.isCancelled} />
             </div>
             <ActionContent
               viewerAction={viewerAction}
+              isCancelled={run.isCancelled}
               busy={busy}
               message={message}
               onMessageChange={setMessage}
@@ -125,6 +132,33 @@ export function EventDetailPage() {
               </div>
             </div>
           )}
+
+          {viewerAction === "host" && !run.isCancelled && (
+            <div className={styles.panel}>
+              {confirmingCancel ? (
+                <div className={styles.cancelConfirm}>
+                  <p className={styles.hostNote}>Cancel this run? Players who requested or were approved will still see the run marked cancelled.</p>
+                  <div className={styles.formActions}>
+                    <button
+                      type="button"
+                      className={styles.dangerBtn}
+                      disabled={busy}
+                      onClick={() => runAction(async () => { await cancel(); setConfirmingCancel(false); })}
+                    >
+                      {busy ? "Cancelling…" : "Confirm cancel"}
+                    </button>
+                    <button type="button" className={styles.ghostBtn} disabled={busy} onClick={() => setConfirmingCancel(false)}>
+                      Never mind
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button type="button" className={styles.dangerBtn} onClick={() => setConfirmingCancel(true)}>
+                  Cancel game
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <p className={styles.footnote}>Approve or decline above to see the roster update.</p>
@@ -134,6 +168,7 @@ export function EventDetailPage() {
 
 interface ActionContentProps {
   viewerAction: ViewerAction;
+  isCancelled: boolean;
   busy: boolean;
   message: string;
   onMessageChange: (v: string) => void;
@@ -142,7 +177,19 @@ interface ActionContentProps {
   declineReason: string | null;
 }
 
-function ActionContent({ viewerAction, busy, message, onMessageChange, onRequest, onWithdraw, declineReason }: ActionContentProps) {
+function ActionContent({
+  viewerAction,
+  isCancelled,
+  busy,
+  message,
+  onMessageChange,
+  onRequest,
+  onWithdraw,
+  declineReason,
+}: ActionContentProps) {
+  if (isCancelled) {
+    return <p className={styles.hostNote}>This run has been cancelled — no further requests can be made.</p>;
+  }
   if (viewerAction === "host") {
     return <p className={styles.hostNote}>This is your run. You can't request to join your own game.</p>;
   }

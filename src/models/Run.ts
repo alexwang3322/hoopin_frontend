@@ -47,6 +47,11 @@ export interface Run {
   goingCount: number;
   isFull: boolean;
   isDraft: boolean;
+  /** Soft-cancelled by the host — distinct from deletion, the run stays
+   *  around (see API_CONTRACT.md §3.1's cancel-vs-delete note). Present on
+   *  every card/list row, not just detail. */
+  isCancelled: boolean;
+  cancelledAt: string | null;
   visibility: RunVisibility;
   viewerStatus: ViewerRunStatus;
   /** Gradient CSS, computed client-side from the server's `cover_seed` (=

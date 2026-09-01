@@ -90,6 +90,17 @@ export function useRunDetail(runId: string | undefined) {
     [run, refetch, toast],
   );
 
+  const cancel = useCallback(async () => {
+    if (!run) return;
+    try {
+      await apiClient.cancelRun(run.id);
+      toast.show("Run cancelled.");
+      await refetch();
+    } catch (err) {
+      toast.show(err instanceof Error ? err.message : "Couldn't cancel this run.");
+    }
+  }, [run, refetch, toast]);
+
   const addressUnlocked = run?.exactAddress !== undefined;
   const pendingCount = run?.pendingRequests?.pendingCount ?? 0;
   const myRequest = run?.viewerRequest;
@@ -106,5 +117,6 @@ export function useRunDetail(runId: string | undefined) {
     decline,
     requestToJoin,
     withdraw,
+    cancel,
   };
 }

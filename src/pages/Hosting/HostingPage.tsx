@@ -29,6 +29,7 @@ export function HostingPage() {
                 <div className={styles.titleRow}>
                   <span className={styles.title}>{run.title}</span>
                   {run.isDraft && <span className={styles.draftTag}>DRAFT</span>}
+                  {run.isCancelled && <span className={styles.cancelledTag}>CANCELLED</span>}
                 </div>
                 <span className={`${styles.meta} num`}>
                   {run.venueName ? formatRunWhen(run.startsAt, run.endsAt, RUN_FORMAT_LABEL[run.format]) : "Draft"}

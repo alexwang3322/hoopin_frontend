@@ -74,6 +74,18 @@
   padding: 1px 5px;
   flex: none;
 }
+.cancelledTag {
+  font-family: var(--font-num);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--declined-fg);
+  border: 1px solid var(--declined-ring);
+  background: var(--declined-bg);
+  border-radius: 5px;
+  padding: 1px 5px;
+  flex: none;
+}
 .meta {
   font-size: 14px;
   color: var(--text-3);

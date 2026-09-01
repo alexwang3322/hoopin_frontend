@@ -44,6 +44,8 @@ export function toRun(w: WireRunSummary | WireRunDetail): Run {
     goingCount: w.going_count,
     isFull: w.is_full,
     isDraft: w.is_draft,
+    isCancelled: w.is_cancelled,
+    cancelledAt: w.cancelled_at,
     visibility: w.visibility,
     viewerStatus: w.viewer_status,
     coverGradient: coverGradientFor(w.cover_seed),

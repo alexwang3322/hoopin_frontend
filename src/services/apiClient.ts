@@ -80,6 +80,8 @@ export const apiClient = {
   updateRun: (runId: string, body: WireUpdateRunRequest) =>
     request<WireRunDetail>(`/runs/${runId}`, { method: "PATCH", body: JSON.stringify(body) }),
 
+  cancelRun: (runId: string) => request<WireRunDetail>(`/runs/${runId}/cancel`, { method: "POST" }),
+
   requestToJoin: (runId: string, message: string | null) =>
     request<WireJoinRequest>(`/runs/${runId}/requests`, {
       method: "POST",

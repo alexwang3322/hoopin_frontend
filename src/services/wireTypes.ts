@@ -33,6 +33,8 @@ export interface WireRunSummary {
   going_count: number;
   is_full: boolean;
   is_draft: boolean;
+  is_cancelled: boolean;
+  cancelled_at: string | null;
   visibility: WireVisibility;
   viewer_status: WireViewerRunStatus;
   cover_seed: string;

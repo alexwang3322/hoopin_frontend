@@ -22,6 +22,15 @@
   border-radius: 12px;
   height: 200px;
 }
+.cancelledBanner {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--declined-bg);
+  color: var(--declined-fg);
+  font-size: 14px;
+  font-weight: 600;
+}
 .titleBlock {
   margin: 20px 0 24px;
 }
@@ -200,6 +209,33 @@
   background: var(--surface);
   color: var(--ink);
   resize: vertical;
+}
+
+.dangerBtn {
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--declined-ring, var(--border-2));
+  background: var(--surface);
+  color: var(--declined-fg);
+}
+.dangerBtn:hover {
+  background: var(--declined-bg);
+}
+.dangerBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.cancelConfirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.formActions {
+  display: flex;
+  gap: 8px;
 }
 
 .footnote {
