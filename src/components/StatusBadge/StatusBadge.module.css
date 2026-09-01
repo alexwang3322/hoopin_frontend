@@ -28,3 +28,8 @@
   border-color: var(--declined-ring);
   background: var(--declined-bg);
 }
+.finished {
+  color: var(--text-3);
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}

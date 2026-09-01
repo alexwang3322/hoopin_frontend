@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useRunDetail } from "../../hooks/useRunDetail";
 import { RUN_FORMAT_LABEL, type ViewerAction } from "../../models/Run";
-import { formatRunWhen } from "../../utils/time";
+import { formatRunWhen, isRunFinished } from "../../utils/time";
 import { PersonLink } from "../../components/PersonLink/PersonLink";
 import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
 import { CapacityMeter } from "../../components/CapacityMeter/CapacityMeter";
@@ -41,6 +41,10 @@ export function EventDetailPage() {
 
   const pendingRequests = run.pendingRequests?.items ?? [];
   const attendees = run.attendees ?? [];
+  // Client-computed from endsAt vs. wall-clock time — never server-sent, so
+  // this flips the instant a run's end time passes even if the backend
+  // never marks it (see utils/time.ts's isRunFinished).
+  const finished = isRunFinished(run.endsAt);
 
   const runAction = async (fn: () => Promise<void>) => {
     setBusy(true);
@@ -60,6 +64,9 @@ export function EventDetailPage() {
           {run.isCancelled && (
             <div className={styles.cancelledBanner}>This run has been cancelled.</div>
           )}
+          {!run.isCancelled && finished && (
+            <div className={styles.finishedBanner}>This run has finished.</div>
+          )}
 
           <div className={styles.titleBlock}>
             <h2>{run.title}</h2>
@@ -72,7 +79,7 @@ export function EventDetailPage() {
 
           {run.description && <p className={styles.desc}>{run.description}</p>}
 
-          {viewerAction === "host" && !run.isCancelled && (
+          {viewerAction === "host" && !run.isCancelled && !finished && (
             <div>
               <div className={styles.reqHeading}>
                 <h3>Requests to play</h3>
@@ -95,11 +102,12 @@ export function EventDetailPage() {
           <div className={styles.panel}>
             <div className={styles.capRow}>
               <CapacityMeter going={run.goingCount} capacity={run.capacity} />
-              <StatusBadge action={viewerAction} cancelled={run.isCancelled} />
+              <StatusBadge action={viewerAction} cancelled={run.isCancelled} finished={finished} />
             </div>
             <ActionContent
               viewerAction={viewerAction}
               isCancelled={run.isCancelled}
+              isFinished={finished}
               busy={busy}
               message={message}
               onMessageChange={setMessage}
@@ -133,7 +141,7 @@ export function EventDetailPage() {
             </div>
           )}
 
-          {viewerAction === "host" && !run.isCancelled && (
+          {viewerAction === "host" && !run.isCancelled && !finished && (
             <div className={styles.panel}>
               {confirmingCancel ? (
                 <div className={styles.cancelConfirm}>
@@ -169,6 +177,7 @@ export function EventDetailPage() {
 interface ActionContentProps {
   viewerAction: ViewerAction;
   isCancelled: boolean;
+  isFinished: boolean;
   busy: boolean;
   message: string;
   onMessageChange: (v: string) => void;
@@ -180,6 +189,7 @@ interface ActionContentProps {
 function ActionContent({
   viewerAction,
   isCancelled,
+  isFinished,
   busy,
   message,
   onMessageChange,
@@ -189,6 +199,9 @@ function ActionContent({
 }: ActionContentProps) {
   if (isCancelled) {
     return <p className={styles.hostNote}>This run has been cancelled — no further requests can be made.</p>;
+  }
+  if (isFinished) {
+    return <p className={styles.hostNote}>This run has finished — no further requests can be made.</p>;
   }
   if (viewerAction === "host") {
     return <p className={styles.hostNote}>This is your run. You can't request to join your own game.</p>;

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import type { Run } from "../../models/Run";
 import { RUN_FORMAT_LABEL, cardViewerAction } from "../../models/Run";
-import { formatDateChip, formatRunWhen } from "../../utils/time";
+import { formatDateChip, formatRunWhen, isRunFinished } from "../../utils/time";
 import { StatusBadge } from "../StatusBadge/StatusBadge";
 import { PersonLink } from "../PersonLink/PersonLink";
 import styles from "./RunCard.module.css";
@@ -11,6 +11,7 @@ export function RunCard({ run }: { run: Run }) {
   const { mon, day } = formatDateChip(run.startsAt);
   const viewerAction = cardViewerAction(run);
   const openSpots = run.capacity !== null ? run.capacity - run.goingCount : null;
+  const finished = isRunFinished(run.endsAt);
 
   return (
     <article className={styles.card}>
@@ -21,7 +22,7 @@ export function RunCard({ run }: { run: Run }) {
             <span className={`${styles.day} num`}>{day}</span>
           </div>
           <div className={styles.badgeSlot}>
-            <StatusBadge action={viewerAction} cancelled={run.isCancelled} />
+            <StatusBadge action={viewerAction} cancelled={run.isCancelled} finished={finished} />
           </div>
         </div>
         <div className={styles.cardBody}>

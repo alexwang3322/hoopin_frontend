@@ -82,3 +82,15 @@ export function formatDateChip(startsAt: string): { mon: string; day: string } {
 export function splitIsoDateTime(iso: string): { date: string; time: string } {
   return { date: iso.slice(0, 10), time: iso.slice(11, 16) };
 }
+
+/**
+ * "Finished" is deliberately never a stored/server field (see
+ * API_CONTRACT.md §6's note on it) — it's the viewer's own wall-clock time
+ * compared against `endsAt`, which already carries an explicit UTC offset,
+ * so `new Date(endsAt)` resolves to the correct absolute instant regardless
+ * of the client's local zone. Computed at call time, not cached, so it
+ * flips the instant a run's end time passes without needing a refetch.
+ */
+export function isRunFinished(endsAt: string): boolean {
+  return new Date(endsAt).getTime() <= Date.now();
+}
