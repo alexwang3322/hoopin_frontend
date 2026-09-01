@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useRunDetail } from "../../hooks/useRunDetail";
 import { RUN_FORMAT_LABEL, type ViewerAction } from "../../models/Run";
 import { formatRunWhen } from "../../utils/time";
@@ -11,7 +11,6 @@ import styles from "./EventDetailPage.module.css";
 
 export function EventDetailPage() {
   const { runId } = useParams<{ runId: string }>();
-  const navigate = useNavigate();
   const {
     run,
     loading,
@@ -34,9 +33,6 @@ export function EventDetailPage() {
     return (
       <div>
         <p>This run doesn't exist.</p>
-        <button type="button" className={styles.backLink} onClick={() => navigate("/")}>
-          &larr; Back to Discover
-        </button>
       </div>
     );
   }
@@ -129,10 +125,6 @@ export function EventDetailPage() {
               </div>
             </div>
           )}
-
-          <button type="button" className={styles.backLink} onClick={() => navigate(-1)}>
-            &larr; Back
-          </button>
         </div>
       </div>
       <p className={styles.footnote}>Approve or decline above to see the roster update.</p>
