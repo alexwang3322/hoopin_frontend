@@ -147,7 +147,7 @@ export function EventDetailPage() {
                     >
                       {busy ? "Cancelling…" : "Confirm cancel"}
                     </button>
-                    <button type="button" className={styles.ghostBtn} disabled={busy} onClick={() => setConfirmingCancel(false)}>
+                    <button type="button" className={styles.secondaryBtn} disabled={busy} onClick={() => setConfirmingCancel(false)}>
                       Never mind
                     </button>
                   </div>

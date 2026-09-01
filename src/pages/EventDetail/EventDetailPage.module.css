@@ -220,6 +220,7 @@
   border: 1px solid var(--declined-ring, var(--border-2));
   background: var(--surface);
   color: var(--declined-fg);
+  margin-top: 12px;
 }
 .dangerBtn:hover {
   background: var(--declined-bg);
