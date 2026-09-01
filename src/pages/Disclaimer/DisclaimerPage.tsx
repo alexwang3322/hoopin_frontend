@@ -13,7 +13,7 @@ export function DisclaimerPage() {
 
       <div className={styles.body}>
         <p>
-          <strong>Demo product.</strong> Pull Up is a design prototype. Every user, run, request, and message shown is
+          <strong>Demo product.</strong> Hoopin is a design prototype. Every user, run, request, and message shown is
           sample data and resets on reload — no real games are scheduled through this app.
         </p>
 
@@ -21,27 +21,27 @@ export function DisclaimerPage() {
           <strong>Assumption of risk.</strong> Basketball and other physical activity carry an inherent risk of injury,
           including sprains, fractures, collisions, and cardiac events. By joining or hosting a run, you voluntarily
           assume these risks and take full responsibility for your own health and safety. Consult a physician before
-          starting any new physical activity — Pull Up does not supervise, insure, or medically screen any run or
+          starting any new physical activity — Hoopin does not supervise, insure, or medically screen any run or
           participant.
         </p>
 
         <p>
           <strong>User-generated content.</strong> Run titles, descriptions, bios, join-request messages, and decline
-          reasons are written by users, not by Pull Up. We don't review, verify, or endorse this content before it's
-          shown to others, and it doesn't reflect Pull Up's views. You're solely responsible for anything you post, and
+          reasons are written by users, not by Hoopin. We don't review, verify, or endorse this content before it's
+          shown to others, and it doesn't reflect Hoopin's views. You're solely responsible for anything you post, and
           agree not to post content that's false, unlawful, infringing, harassing, or unsafe. We may remove or decline
           to display any content at any time, for any reason, without notice.
         </p>
 
         <p>
-          <strong>Service availability.</strong> Pull Up is provided on an "as available" basis. We don't guarantee
+          <strong>Service availability.</strong> Hoopin is provided on an "as available" basis. We don't guarantee
           that the app, or any run, request, or message in it, will be available, uninterrupted, error-free, or
-          preserved. To the fullest extent the law allows, Pull Up is not liable for lost data, missed runs, or other
+          preserved. To the fullest extent the law allows, Hoopin is not liable for lost data, missed runs, or other
           damages resulting from downtime, maintenance, technical failure, or discontinuation of the service.
         </p>
 
         <p>
-          <strong>User-organized activity.</strong> Runs are created and run by individual users, not by Pull Up. We
+          <strong>User-organized activity.</strong> Runs are created and run by individual users, not by Hoopin. We
           don't verify hosts, venues, or participants, and we aren't responsible for the accuracy of a listing, the
           conduct of any user, or disputes between users.
         </p>
@@ -53,14 +53,14 @@ export function DisclaimerPage() {
         </p>
 
         <p>
-          <strong>Release of claims between users.</strong> To the fullest extent the law allows, you release Pull Up
+          <strong>Release of claims between users.</strong> To the fullest extent the law allows, you release Hoopin
           from any and all claims, demands, damages, or losses — known or unknown — arising from your interactions
           with other users, whether those interactions happen in the app or in person at a run. This release doesn't
-          apply to Pull Up's own gross negligence or willful misconduct, where the law doesn't allow it to be waived.
+          apply to Hoopin's own gross negligence or willful misconduct, where the law doesn't allow it to be waived.
         </p>
 
         <p>
-          <strong>Third-party links and services.</strong> Pull Up may link to or rely on third-party sites and
+          <strong>Third-party links and services.</strong> Hoopin may link to or rely on third-party sites and
           services — for example, maps or venue pages — that we don't own or control. We aren't responsible for the
           content, accuracy, security, or privacy practices of any third-party site, and linking to one isn't an
           endorsement of it.

@@ -15,7 +15,7 @@ export function RootLayout() {
     <div className={styles.page}>
       <header className={styles.topbar}>
         <div className={styles.topbarInner}>
-          <button type="button" className={styles.brand} onClick={() => navigate("/")} aria-label="Pull Up home">
+          <button type="button" className={styles.brand} onClick={() => navigate("/")} aria-label="Hoopin home">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="12" cy="12" r="11" fill="var(--accent)" />
               <path
@@ -26,7 +26,7 @@ export function RootLayout() {
                 opacity=".82"
               />
             </svg>
-            <span className={styles.wordmark}>Pull Up</span>
+            <span className={styles.wordmark}>Hoopin</span>
           </button>
 
           <nav className={styles.nav}>
