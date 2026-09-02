@@ -148,16 +148,6 @@
 .accountChip:hover {
   background: var(--surface);
 }
-.mockTag {
-  font-family: var(--font-num);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--text-3);
-  border: 1px solid var(--border-2);
-  border-radius: 5px;
-  padding: 1px 5px;
-}
 .chipName {
   font-size: 13px;
   color: var(--ink);

@@ -1,7 +1,7 @@
-/** The hardcoded demo viewer — html/index.html has no sign-in flow, so the
- *  app always runs as this user, exactly like the original prototype. This
- *  also doubles as the dev-auth bearer token's userId (backend/src/lib/auth.ts)
- *  until a real issuer (Clerk) is wired in on both ends. */
+/** Seed id for the local-only Account profile mock (models/Account.ts,
+ *  mock/account.ts) — that screen has no API_CONTRACT.md counterpart and
+ *  stays mock regardless of who's actually signed in via Clerk. Not used
+ *  for auth/API identity anymore — see services/clerkBridge.ts. */
 export const CURRENT_USER_ID = "u_jamie";
 
 export const HOST_RUN_ID = "ev_kezar_lunch";
@@ -10,3 +10,8 @@ export const HOST_RUN_ID = "ev_kezar_lunch";
  *  zero setup; override via `frontend/.env.local` (see `.env.example`) for
  *  a deployed backend. */
 export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8787/v1";
+
+/** Safe to expose client-side by design (Clerk docs) — identifies the
+ *  Clerk app, carries no secret. Set in frontend/.env.local; see
+ *  .env.example. */
+export const CLERK_PUBLISHABLE_KEY: string = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "";

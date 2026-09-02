@@ -1,4 +1,5 @@
-import { API_BASE_URL, CURRENT_USER_ID } from "../constants";
+import { API_BASE_URL } from "../constants";
+import { getClerkToken } from "./clerkBridge";
 import type {
   WireCursorPage,
   WireRunSummary,
@@ -30,13 +31,15 @@ export class ApiRequestError extends Error {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const token = await getClerkToken();
   const res = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      // Local-dev-only auth stub (backend/src/lib/auth.ts) — replace with a
-      // real issued token once Clerk (or another issuer) is wired in here.
-      Authorization: `Bearer dev:${CURRENT_USER_ID}`,
+      // Signed-out requests omit Authorization entirely — the backend
+      // allows unauthenticated GET on public runs (API_CONTRACT.md §5) and
+      // 401s anything else on its own.
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...init.headers,
     },
   });

@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { useHeaderCounts } from "../../hooks/useHeaderCounts";
 import { useAppState, useSetCity } from "../../context/AppStoreContext";
 import { Avatar } from "../Avatar/Avatar";
@@ -59,11 +60,24 @@ export function RootLayout() {
             <button type="button" className={styles.btnPrimary} onClick={() => navigate("/create")}>
               Host a run
             </button>
-            <button type="button" className={styles.accountChip} onClick={() => navigate("/account")} aria-label="Account">
-              <span className={styles.mockTag}>DEMO</span>
-              <Avatar initials={account.initials} color={account.color} size="sm" />
-              <span className={styles.chipName}>{account.name}</span>
-            </button>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button type="button" className={styles.btnPrimary}>
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button type="button" className={styles.navItem}>
+                  Sign up
+                </button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <button type="button" className={styles.accountChip} onClick={() => navigate("/account")} aria-label="Account">
+                <Avatar initials={account.initials} color={account.color} size="sm" />
+                <span className={styles.chipName}>{account.name}</span>
+              </button>
+            </SignedIn>
           </div>
         </div>
       </header>
