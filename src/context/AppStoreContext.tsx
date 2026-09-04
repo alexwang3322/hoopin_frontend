@@ -1,7 +1,10 @@
-import { createContext, useContext, useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import type { AccountProfile } from "../models/Account";
 import type { City } from "../models/Run";
-import { INITIAL_ACCOUNT } from "../mock/account";
+import { DEFAULT_ACCOUNT } from "../mock/account";
+import { apiClient } from "../services/apiClient";
+import { toUserSummary } from "../services/mappers";
 
 /**
  * What's left here after wiring to the live backend: `account` (profile
@@ -10,6 +13,12 @@ import { INITIAL_ACCOUNT } from "../mock/account";
  * useRuns can filter Discover by it — GET /runs's `city` param).
  * Run/request data itself now lives in each hook's own fetch state
  * (hooks/useRuns.ts etc.), not here — the server is the source of truth.
+ *
+ * `account`'s id/name/initials/bio come from a real GET /me fetch once
+ * signed in (below) — location/gender/position have nowhere real to come
+ * from, so those stay whatever DEFAULT_ACCOUNT/the user's own in-app edits
+ * set them to; editing them isn't persisted server-side (no such endpoint
+ * exists yet), so it resets on reload like it always has.
  */
 export interface AppState {
   account: AccountProfile;
@@ -22,8 +31,32 @@ const CityContext = createContext<City | null>(null);
 const SetCityContext = createContext<Dispatch<SetStateAction<City>> | null>(null);
 
 export function AppStoreProvider({ children }: { children: ReactNode }) {
-  const [account, setAccount] = useState<AccountProfile>(INITIAL_ACCOUNT);
+  const [account, setAccount] = useState<AccountProfile>(DEFAULT_ACCOUNT);
   const [city, setCity] = useState<City>("SF");
+  const { isSignedIn } = useAuth();
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      setAccount(DEFAULT_ACCOUNT);
+      return;
+    }
+    let cancelled = false;
+    apiClient
+      .getMe()
+      .then((wire) => {
+        if (cancelled) return;
+        const summary = toUserSummary(wire);
+        setAccount((prev) => ({ ...prev, ...summary }));
+      })
+      .catch(() => {
+        // Swallow — DEFAULT_ACCOUNT already covers "not loaded yet"/"signed
+        // out", and the header/account page just keep showing that until a
+        // retry (e.g. route change) succeeds.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isSignedIn]);
 
   return (
     <AccountContext.Provider value={account}>
