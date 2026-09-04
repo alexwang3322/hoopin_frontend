@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 import { useMyRequests } from "../../hooks/useMyRequests";
 import { formatRelativeAgo } from "../../utils/time";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
@@ -20,6 +21,7 @@ const STATUS_CLASS: Record<string, string> = {
 export function MyRunsPage() {
   const { requests, loading } = useMyRequests();
   const navigate = useNavigate();
+  const { isSignedIn } = useAuth();
 
   return (
     <div>
@@ -28,7 +30,10 @@ export function MyRunsPage() {
         <p>Games you've asked to join. No notifications yet — this page is the only way to find out you got in.</p>
       </div>
 
-      {!loading && requests.length === 0 && <EmptyState />}
+      {!loading && !isSignedIn && (
+        <EmptyState message="Sign in to see the games you've asked to join." signIn />
+      )}
+      {!loading && isSignedIn && requests.length === 0 && <EmptyState />}
 
       <div className={styles.list}>
         {requests.map((req) => (

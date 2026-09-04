@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { SignInButton } from "@clerk/clerk-react";
 import { useRunDetail } from "../../hooks/useRunDetail";
 import { RUN_FORMAT_LABEL, type ViewerAction } from "../../models/Run";
 import { formatRunWhen, isRunFinished } from "../../utils/time";
@@ -247,7 +248,16 @@ function ActionContent({
     return <p className={styles.hostNote}>This run is full.</p>;
   }
   if (viewerAction === "signed_out") {
-    return <p className={styles.hostNote}>Sign in to request to play.</p>;
+    return (
+      <div>
+        <p className={styles.hostNote}>Sign in to request to play.</p>
+        <SignInButton mode="modal">
+          <button type="button" className={styles.primaryBtn}>
+            Sign in
+          </button>
+        </SignInButton>
+      </div>
+    );
   }
   // can_request
   return (

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 import { useHosting } from "../../hooks/useHosting";
 import { RUN_FORMAT_LABEL } from "../../models/Run";
 import { formatRunWhen, isRunFinished } from "../../utils/time";
@@ -8,6 +9,7 @@ import styles from "./HostingPage.module.css";
 export function HostingPage() {
   const { runs, loading } = useHosting();
   const navigate = useNavigate();
+  const { isSignedIn } = useAuth();
 
   return (
     <div>
@@ -16,7 +18,8 @@ export function HostingPage() {
         <p>Runs you organize, including drafts. Pending requests need your call.</p>
       </div>
 
-      {!loading && runs.length === 0 && <EmptyState />}
+      {!loading && !isSignedIn && <EmptyState message="Sign in to see the runs you host." signIn />}
+      {!loading && isSignedIn && runs.length === 0 && <EmptyState />}
 
       <div className={styles.list}>
         {runs.map((run) => {

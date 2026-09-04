@@ -135,6 +135,20 @@
   filter: brightness(1.06);
 }
 
+.btnSecondary {
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.btnSecondary:hover {
+  background: var(--surface-2);
+}
+
 .accountChip {
   display: flex;
   align-items: center;

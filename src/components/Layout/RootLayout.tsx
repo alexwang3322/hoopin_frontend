@@ -67,7 +67,7 @@ export function RootLayout() {
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button type="button" className={styles.navItem}>
+                <button type="button" className={styles.btnSecondary}>
                   Sign up
                 </button>
               </SignUpButton>

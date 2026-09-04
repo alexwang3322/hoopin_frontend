@@ -5,4 +5,30 @@
   text-align: center;
   color: var(--text-3);
   font-size: 14px;
+  /* Fills down toward the bottom of the viewport instead of a small fixed
+     box — approximates the chrome above it (topbar + page head + footer,
+     ~320px) rather than measuring exactly per-screen. */
+  min-height: max(240px, calc(100vh - 320px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  box-sizing: border-box;
+}
+.empty p {
+  margin: 0;
+}
+.signInBtn {
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.signInBtn:hover {
+  filter: brightness(1.06);
 }
