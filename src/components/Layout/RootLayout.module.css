@@ -173,6 +173,13 @@
   padding: 14px 24px;
   text-align: center;
 }
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
 .linkBtn {
   background: none;
   border: 0;

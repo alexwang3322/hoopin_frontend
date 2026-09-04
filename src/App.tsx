@@ -14,6 +14,11 @@ import { MyRunsPage } from "./pages/MyRuns/MyRunsPage";
 import { AccountPage } from "./pages/Account/AccountPage";
 import { ProfilePage } from "./pages/Profile/ProfilePage";
 import { DisclaimerPage } from "./pages/Disclaimer/DisclaimerPage";
+import { TermsPage } from "./pages/Terms/TermsPage";
+import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
+import { SecurityPage } from "./pages/Security/SecurityPage";
+import { DmcaPage } from "./pages/Dmca/DmcaPage";
+import { AboutPage } from "./pages/About/AboutPage";
 
 /** Hands apiClient.ts (a plain module) the current session's getToken() —
  *  see services/clerkBridge.ts. Renders nothing. */
@@ -45,6 +50,11 @@ function App() {
                 <Route path="account" element={<AccountPage />} />
                 <Route path="profile/:userId" element={<ProfilePage />} />
                 <Route path="disclaimer" element={<DisclaimerPage />} />
+                <Route path="terms" element={<TermsPage />} />
+                <Route path="privacy" element={<PrivacyPage />} />
+                <Route path="security" element={<SecurityPage />} />
+                <Route path="dmca" element={<DmcaPage />} />
+                <Route path="about" element={<AboutPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

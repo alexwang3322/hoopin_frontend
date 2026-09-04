@@ -13,8 +13,9 @@ export function DisclaimerPage() {
 
       <div className={styles.body}>
         <p>
-          <strong>Demo product.</strong> Hoopin is a design prototype. Every user, run, request, and message shown is
-          sample data and resets on reload — no real games are scheduled through this app.
+          <strong>Early-stage product.</strong> Hoopin is under active development. Some data you see (a handful of
+          seeded demo runs and users) is sample content, not a real game — treat any run you don't recognize as
+          possibly a demo fixture rather than a live game.
         </p>
 
         <p>
@@ -68,8 +69,8 @@ export function DisclaimerPage() {
 
         <p>
           <strong>No warranty; limitation of liability.</strong> This application is provided "as is" and "as
-          available," without warranties of any kind, express or implied. To the fullest extent the law allows, Pull
-          Up disclaims all liability — direct, indirect, incidental, or consequential — for any injury, loss, or
+          available," without warranties of any kind, express or implied. To the fullest extent the law allows,
+          Hoopin disclaims all liability — direct, indirect, incidental, or consequential — for any injury, loss, or
           damage arising from your use of the app or participation in any listed run.
         </p>
       </div>

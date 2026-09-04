@@ -92,9 +92,26 @@ export function RootLayout() {
       </main>
 
       <footer className={styles.siteFooter}>
-        <button type="button" className={styles.linkBtn} onClick={() => navigate("/disclaimer")}>
-          Disclaimer
-        </button>
+        <nav className={styles.footerLinks} aria-label="Legal">
+          <button type="button" className={styles.linkBtn} onClick={() => navigate("/about")}>
+            About
+          </button>
+          <button type="button" className={styles.linkBtn} onClick={() => navigate("/terms")}>
+            Terms
+          </button>
+          <button type="button" className={styles.linkBtn} onClick={() => navigate("/privacy")}>
+            Privacy
+          </button>
+          <button type="button" className={styles.linkBtn} onClick={() => navigate("/security")}>
+            Security
+          </button>
+          <button type="button" className={styles.linkBtn} onClick={() => navigate("/dmca")}>
+            DMCA
+          </button>
+          <button type="button" className={styles.linkBtn} onClick={() => navigate("/disclaimer")}>
+            Disclaimer
+          </button>
+        </nav>
       </footer>
 
       <ToastHost />

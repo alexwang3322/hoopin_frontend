@@ -1,0 +1,60 @@
+.pageHead {
+  margin-bottom: 28px;
+}
+.pageHead h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.pageHead p {
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.body {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.body p,
+.body li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.body strong {
+  color: var(--ink);
+}
+.body h2 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 8px 0 0;
+}
+.body ul {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backLink {
+  display: block;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-2);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+.backLink:hover {
+  color: var(--ink);
+}
