@@ -6,7 +6,7 @@
  */
 
 export type WireRunFormat = "5v5_full_court" | "3v3_half_court";
-export type WireCity = "SF" | "OAK";
+export type WireCity = "SF" | "OAK" | "SJ" | "SD" | "NYC";
 export type WireVisibility = "public" | "private";
 export type WireViewerRunStatus = "host" | "pending" | "approved" | "declined" | "withdrawn" | null;
 export type WireViewerAction = "signed_out" | "can_request" | "host" | "pending" | "approved" | "declined" | "full";

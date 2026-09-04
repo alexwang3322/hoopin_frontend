@@ -96,29 +96,21 @@
   gap: 10px;
   flex-wrap: wrap;
 }
-.cityToggle {
-  display: flex;
-  padding: 2px;
-  background: var(--surface-2);
-  border-radius: 8px;
-  gap: 2px;
-}
-.cityToggle button {
+.cityPicker {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  border: 0;
-  padding: 5px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  background: transparent;
-  color: var(--text-2);
   font-family: var(--font-num);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--surface-2);
+  color: var(--text-2);
 }
-.cityOn {
-  background: var(--surface) !important;
-  color: var(--ink) !important;
-  box-shadow: var(--shadow-sm);
+.cityPicker:hover {
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .btnPrimary {

@@ -10,7 +10,15 @@ export const RUN_FORMAT_LABEL: Record<RunFormat, string> = {
 
 export type RunVisibility = "public" | "private";
 
-export type City = "SF" | "OAK";
+export type City = "SF" | "OAK" | "SJ" | "SD" | "NYC";
+
+export const CITY_LABEL: Record<City, string> = {
+  SF: "San Francisco",
+  OAK: "Oakland",
+  SJ: "San Jose",
+  SD: "San Diego",
+  NYC: "New York City",
+};
 
 /** The 7-branch action-panel state machine from API_CONTRACT.md §2, computed
  *  server-side and carried straight through by services/mappers.ts — never

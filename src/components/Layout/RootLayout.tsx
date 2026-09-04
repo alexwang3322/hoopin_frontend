@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { useHeaderCounts } from "../../hooks/useHeaderCounts";
 import { useAppState, useSetCity } from "../../context/AppStoreContext";
+import { CITY_LABEL, type City } from "../../models/Run";
 import { Avatar } from "../Avatar/Avatar";
 import { ToastHost } from "../ToastHost/ToastHost";
 import styles from "./RootLayout.module.css";
@@ -49,14 +50,18 @@ export function RootLayout() {
           </nav>
 
           <div className={styles.actions}>
-            <div className={styles.cityToggle} role="group" aria-label="City">
-              <button type="button" className={city === "SF" ? styles.cityOn : ""} onClick={() => setCity("SF")}>
-                SF
-              </button>
-              <button type="button" className={city === "OAK" ? styles.cityOn : ""} onClick={() => setCity("OAK")}>
-                OAK
-              </button>
-            </div>
+            <select
+              className={styles.cityPicker}
+              aria-label="City"
+              value={city}
+              onChange={(e) => setCity(e.target.value as City)}
+            >
+              {Object.entries(CITY_LABEL).map(([code, label]) => (
+                <option key={code} value={code}>
+                  {label}
+                </option>
+              ))}
+            </select>
             <button type="button" className={styles.btnPrimary} onClick={() => navigate("/create")}>
               Host a run
             </button>

@@ -4,7 +4,7 @@ import { useCreateRun } from "../../hooks/useCreateRun";
 import { apiClient } from "../../services/apiClient";
 import { toRun } from "../../services/mappers";
 import { BLANK_RUN_DRAFT, type CreateRunDraft } from "../../models/CreateRunDraft";
-import type { Run } from "../../models/Run";
+import { CITY_LABEL, type Run } from "../../models/Run";
 import { splitIsoDateTime } from "../../utils/time";
 import styles from "./CreateRunPage.module.css";
 
@@ -141,8 +141,11 @@ function CreateRunForm({ editingRun }: { editingRun: Run | undefined }) {
           <label className={styles.field}>
             <span>City</span>
             <select value={form.city} onChange={(e) => update("city", e.target.value as CreateRunDraft["city"])}>
-              <option value="SF">San Francisco</option>
-              <option value="OAK">Oakland</option>
+              {Object.entries(CITY_LABEL).map(([code, label]) => (
+                <option key={code} value={code}>
+                  {label}
+                </option>
+              ))}
             </select>
           </label>
         </div>
