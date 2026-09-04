@@ -22,16 +22,15 @@ export interface CreateRunDraft {
 }
 
 export const BLANK_RUN_DRAFT: CreateRunDraft = {
-  title: "Thursday Night Full Court",
-  description:
-    "Casual full-court run, all levels welcome. Bring a light and dark shirt — we split teams by colour.",
+  title: "",
+  description: "",
   date: "2026-09-24",
   startTime: "19:00",
   endTime: "21:00",
   timezone: "America/Los_Angeles",
   format: "5v5_full_court",
-  venueName: "Kezar Pavilion, San Francisco",
-  exactAddress: "755 Frederick St, San Francisco, CA 94117",
+  venueName: "",
+  exactAddress: "",
   city: "SF",
   capacity: "10",
   visibility: "public",
