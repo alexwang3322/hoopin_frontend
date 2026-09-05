@@ -12,12 +12,16 @@ export type RunVisibility = "public" | "private";
 
 export type City = "SF" | "OAK" | "SJ" | "SD" | "NYC";
 
+/** Iteration order (`Object.entries`/`Object.keys`) is the display order
+ *  everywhere this backs a list — Discover's city filter, Host-a-run's
+ *  city field, and Account's location field all iterate this same map, so
+ *  reordering it here is the one place that reorders all three. */
 export const CITY_LABEL: Record<City, string> = {
-  SF: "San Francisco",
-  OAK: "Oakland",
-  SJ: "San Jose",
   SD: "San Diego",
+  SJ: "San Jose",
+  SF: "San Francisco",
   NYC: "New York City",
+  OAK: "Oakland",
 };
 
 /** The 7-branch action-panel state machine from API_CONTRACT.md §2, computed

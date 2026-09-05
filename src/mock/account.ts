@@ -16,7 +16,7 @@ export const DEFAULT_ACCOUNT: AccountProfile = {
   initials: "H",
   bio: null,
   color: avatarColorFor("hooper"),
-  location: "San Francisco",
+  location: "SF",
   gender: "Prefer not to say",
   position: "Flexible",
 };

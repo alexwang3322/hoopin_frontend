@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAccount } from "../../hooks/useAccount";
 import { Avatar } from "../../components/Avatar/Avatar";
-import type { AccountLocation, Gender, PlayerPosition } from "../../models/Account";
+import type { Gender, PlayerPosition } from "../../models/Account";
+import { CITY_LABEL, type City } from "../../models/Run";
 import styles from "./AccountPage.module.css";
 
 function initialsFromName(name: string): string {
@@ -17,7 +18,7 @@ export function AccountPage() {
   const navigate = useNavigate();
   const [name, setName] = useState(account.name);
   const [bio, setBio] = useState(account.bio ?? "");
-  const [location, setLocation] = useState<AccountLocation>(account.location);
+  const [location, setLocation] = useState<City>(account.location);
   const [gender, setGender] = useState<Gender>(account.gender);
   const [position, setPosition] = useState<PlayerPosition>(account.position);
   const [busy, setBusy] = useState(false);
@@ -25,7 +26,7 @@ export function AccountPage() {
   const handleSave = async () => {
     setBusy(true);
     try {
-      const finalName = name.trim() || "Jamie Tran";
+      const finalName = name.trim() || "Hooper";
       await saveAccount({
         ...account,
         name: finalName,
@@ -68,9 +69,12 @@ export function AccountPage() {
           <div className={styles.fieldRow}>
             <label className={styles.field}>
               <span>Location</span>
-              <select value={location} onChange={(e) => setLocation(e.target.value as AccountLocation)}>
-                <option>San Francisco</option>
-                <option>Oakland</option>
+              <select value={location} onChange={(e) => setLocation(e.target.value as City)}>
+                {Object.entries(CITY_LABEL).map(([code, label]) => (
+                  <option key={code} value={code}>
+                    {label}
+                  </option>
+                ))}
               </select>
             </label>
             <label className={styles.field}>
