@@ -115,12 +115,6 @@ export function AccountPage() {
       <button type="button" className={styles.backLink} onClick={() => navigate("/")}>
         &larr; Back
       </button>
-
-      <p className={styles.footnote}>
-        <button type="button" className={styles.linkBtn} onClick={() => navigate("/disclaimer")}>
-          Terms &amp; Disclaimer
-        </button>
-      </p>
     </div>
   );
 }
