@@ -32,7 +32,10 @@ const SetCityContext = createContext<Dispatch<SetStateAction<City>> | null>(null
 
 export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [account, setAccount] = useState<AccountProfile>(DEFAULT_ACCOUNT);
-  const [city, setCity] = useState<City>("SF");
+  // Defaults to San Diego for a first-time/signed-out visitor — a stand-in
+  // until a real "detect my location" feature exists, not a claim that SD
+  // is where most users actually are.
+  const [city, setCity] = useState<City>("SD");
   const { isSignedIn } = useAuth();
 
   useEffect(() => {

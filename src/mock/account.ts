@@ -9,6 +9,8 @@ import { avatarColorFor } from "../utils/hash";
  * for a Clerk account with no name at all (backend/src/routes/webhooks.ts).
  * location/gender/position have no API_CONTRACT.md counterpart — see
  * models/Account.ts — so they stay generic defaults, editable in-app.
+ * location defaults to San Diego, matching AppStoreContext's city filter
+ * default — a stand-in until a real "detect my location" feature exists.
  */
 export const DEFAULT_ACCOUNT: AccountProfile = {
   id: "",
@@ -16,7 +18,7 @@ export const DEFAULT_ACCOUNT: AccountProfile = {
   initials: "H",
   bio: null,
   color: avatarColorFor("hooper"),
-  location: "SF",
+  location: "SD",
   gender: "Prefer not to say",
   position: "Flexible",
 };
