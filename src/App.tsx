@@ -19,6 +19,7 @@ import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
 import { SecurityPage } from "./pages/Security/SecurityPage";
 import { DmcaPage } from "./pages/Dmca/DmcaPage";
 import { AboutPage } from "./pages/About/AboutPage";
+import { RefreshSeedDatesPage } from "./pages/Admin/RefreshSeedDatesPage";
 
 /** Hands apiClient.ts (a plain module) the current session's getToken() —
  *  see services/clerkBridge.ts. Renders nothing. */
@@ -55,6 +56,7 @@ function App() {
                 <Route path="security" element={<SecurityPage />} />
                 <Route path="dmca" element={<DmcaPage />} />
                 <Route path="about" element={<AboutPage />} />
+                <Route path="admin/refresh-seed-dates" element={<RefreshSeedDatesPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
